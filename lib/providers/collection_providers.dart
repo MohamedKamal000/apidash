@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:apidash/providers/validation_provider.dart';
+import 'package:apidash/validation/enums.dart';
 import 'package:apidash_core/apidash_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -352,6 +354,15 @@ class CollectionStateNotifier
 
     // Terminal: start network log
     final terminal = ref.read(terminalStateProvider.notifier);
+
+    final rulesMap =
+    ref.read(validationProvider);
+
+    if (!validateRuleSet(rulesMap[ValidationRuleType.sendRequestValidationRules]!, substitutedHttpRequestModel)) {
+      return;
+    }
+
+
     final logId = terminal.startNetwork(
       apiType: executionRequestModel.apiType,
       method: substitutedHttpRequestModel.method,
